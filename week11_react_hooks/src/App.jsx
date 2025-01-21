@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import useIsOnline from "./useIsonline";
+import useDebounce from './useDebounce';
 
 function usePrev(value){
 
@@ -16,6 +17,28 @@ function usePrev(value){
   
 };
 
+function SearchComponent() {
+  const [searchTerm, setSearchTerm] = useState('');
+  const debouncedSearchTerm = useDebounce(searchTerm, 2000); // 2000ms = 2 seconds
+
+  // This effect will only run when debouncedSearchTerm changes
+  useEffect(() => {
+      if (debouncedSearchTerm) {
+          // Perform your search or API call here
+          console.log('Searching for:', debouncedSearchTerm);
+      }
+  }, [debouncedSearchTerm]);
+
+  return (
+    <input
+        type="text"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        placeholder="Search..."
+    />
+);
+}
+
 function App(){
 
   const [state, setState]= useState(0)
@@ -26,6 +49,7 @@ function App(){
     {prevCount}
     <button onClick={()=>{setState(currentCount => currentCount+1)}}>Increase Count</button>
     {state}
+    {SearchComponent()}
    
     
 
